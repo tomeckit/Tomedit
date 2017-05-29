@@ -1,1 +1,1 @@
-Tu jeszcze nic nie ma, ale pewnie kiedyœ sie pojawi
+Takie ma³e narz¹dko audio dla nagrywaj¹cych w terenie. Wymaga kilku programów zewnêtrznych, ale mo¿e bêdzie umia³o samo wszystko sobie pobraæ, jednak to daleka przysz³oœæ. Tym czasem nie umie to w zasadzie nic i mo¿na co najwy¿ej sobie poklikaæ.
