@@ -41,10 +41,7 @@ class MainWindow(wx.Frame):
 
  def onIncreaseVolume(self, e):
   checkbox = e.GetEventObject()
-  if checkbox.GetValue()==1:
-   self.volume.Enable(True)
-  else:
-   self.volume.Enable(False)
+  self.volume.Enable(checkbox.GetValue())
 
  def onAddFile(self, e):
   dlg = wx.FileDialog(self)
@@ -52,7 +49,7 @@ class MainWindow(wx.Frame):
    self.list.Append([dlg.GetPath()])
 
  def setDefaultValues(self):
-  self.volume.Enable(False)
+  self.volume.Enable(self.increaseVolume.GetValue())
  
 class Controller:
  def __init__(self, app):
