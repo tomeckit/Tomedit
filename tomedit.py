@@ -6,6 +6,8 @@ class MainWindow(wx.Frame):
   wx.Frame.__init__(self, parent, title="Tomedit")
   self.initUi()
   self.bindEvents()
+  self.setDefaultValues()
+
  def initUi(self):
   panel = wx.Panel(self)
   sizer = wx.BoxSizer(wx.VERTICAL)
@@ -31,11 +33,23 @@ class MainWindow(wx.Frame):
 
  def bindEvents(self):
   self.addFile.Bind(wx.EVT_BUTTON, self.onAddFile)
+  self.increaseVolume.Bind(wx.EVT_CHECKBOX, self.onIncreaseVolume)
+
+ def onIncreaseVolume(self, e):
+  checkbox = e.GetEventObject()
+  if checkbox.GetValue()==1:
+   self.volume.Enable(True)
+  else:
+   self.volume.Enable(False)
 
  def onAddFile(self, e):
   dlg = wx.FileDialog(self)
   if dlg.ShowModal() == wx.ID_OK:
    self.list.Append([dlg.GetPath()])
+
+ def setDefaultValues(self):
+  self.volume.Enable(False)
+ 
 class Controller:
  def __init__(self, app):
   self.mainWindow = MainWindow(None)
