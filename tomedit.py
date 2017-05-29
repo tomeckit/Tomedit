@@ -10,17 +10,25 @@ class MainWindow(wx.Frame):
 
  def initUi(self):
   panel = wx.Panel(self)
-  sizer = wx.BoxSizer(wx.VERTICAL)
+  sizer = wx.BoxSizer(wx.HORIZONTAL)
   self.listLabel = wx.StaticText(panel, label='pliki')
   self.list = wx.ListView(panel)
-  self.list.InsertColumn(0, 'plik')
+  self.list.InsertColumn(0, 'nazwa pliku')
+  self.list.InsertColumn(1, 'œcie¿ka')
   self.addFile = wx.Button(panel, label='dodaj plik')
   self.addFolder = wx.Button(panel, label='dodaj folder')
   self.subFolders = wx.CheckBox(panel,label='uwzglêdniaj podfoldery')
   self.fadein = wx.CheckBox(panel,label='£agodny start')
+  self.fadeinLabel = wx.StaticText(panel, label='Ms')
   self.fadeinValue = wx.TextCtrl(panel)
-  self.increaseVolume = wx.CheckBox(panel,label='Zwiêksz g³oœnoœæ')
-  self.volume = wx.TextCtrl(panel)
+  self.fadeout = wx.CheckBox(panel,label='£agodne zciszenie')
+  self.fadeoutLabel = wx.StaticText(panel, label='Ms')
+  self.fadeoutValue = wx.TextCtrl(panel)
+  self.changeVolume = wx.CheckBox(panel,label='Zmieñ g³oœnoœæ')
+  self.volumeLabel = wx.StaticText(panel, label='DB')
+  self.volumeValue = wx.TextCtrl(panel)
+  self.limiter = wx.CheckBox(panel,label='nie dopuszczaj do przesterowania')
+  self.swapChannels = wx.CheckBox(panel,label='Zamieñ kana³y')
   self.start = wx.Button(panel, label='Start')
   sizer.Add(self.listLabel)
   sizer.Add(self.list)
@@ -28,20 +36,41 @@ class MainWindow(wx.Frame):
   sizer.Add(self.addFolder)
   sizer.Add(self.subFolders)
   sizer.Add(self.fadein)
+  sizer.Add(self.fadeinLabel)
   sizer.Add(self.fadeinValue)
-  sizer.Add(self.increaseVolume)
-  sizer.Add(self.volume)
+  sizer.Add(self.fadeout)
+  sizer.Add(self.fadeoutLabel)
+  sizer.Add(self.fadeoutValue)
+  sizer.Add(self.changeVolume)
+  sizer.Add(self.volumeLabel)
+  sizer.Add(self.volumeValue)
+  sizer.Add(self.limiter)
+  sizer.Add(self.swapChannels)
   sizer.Add(self.start)
 
   panel.SetSizerAndFit(sizer)
 
  def bindEvents(self):
   self.addFile.Bind(wx.EVT_BUTTON, self.onAddFile)
-  self.increaseVolume.Bind(wx.EVT_CHECKBOX, self.onIncreaseVolume)
 
- def onIncreaseVolume(self, e):
+  self.fadein.Bind(wx.EVT_CHECKBOX, self.onFadein)
+
+ def onFadein(self, e):
   checkbox = e.GetEventObject()
-  self.volume.Enable(checkbox.GetValue())
+  self.fadeinValue.Enable(checkbox.GetValue())
+
+  self.fadeout.Bind(wx.EVT_CHECKBOX, self.onFadeout)
+
+ def onFadeout(self, e):
+  checkbox = e.GetEventObject()
+  self.fadeoutValue.Enable(checkbox.GetValue())
+
+  self.changeVolume.Bind(wx.EVT_CHECKBOX, self.onChangeVolume)
+
+ def onChangeVolume(self, e):
+  checkbox = e.GetEventObject()
+  self.volumeValue.Enable(checkbox.GetValue())
+
 
  def onAddFile(self, e):
   dlg = wx.FileDialog(self)
@@ -49,8 +78,11 @@ class MainWindow(wx.Frame):
    self.list.Append([dlg.GetPath()])
 
  def setDefaultValues(self):
-  self.volume.Enable(self.increaseVolume.GetValue())
- 
+  self.volumeValue.Enable(self.changeVolume.GetValue())
+  self.fadeinValue.Enable(self.fadein.GetValue())
+  self.fadeoutValue.Enable(self.fadeout.GetValue())
+
+
 class Controller:
  def __init__(self, app):
   self.mainWindow = MainWindow(None)
