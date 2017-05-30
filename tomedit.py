@@ -54,18 +54,17 @@ class MainWindow(wx.Frame):
   self.addFile.Bind(wx.EVT_BUTTON, self.onAddFile)
 
   self.fadein.Bind(wx.EVT_CHECKBOX, self.onFadein)
+  self.fadeout.Bind(wx.EVT_CHECKBOX, self.onFadeout)
+  self.changeVolume.Bind(wx.EVT_CHECKBOX, self.onChangeVolume)
+
 
  def onFadein(self, e):
   checkbox = e.GetEventObject()
   self.fadeinValue.Enable(checkbox.GetValue())
 
-  self.fadeout.Bind(wx.EVT_CHECKBOX, self.onFadeout)
-
  def onFadeout(self, e):
   checkbox = e.GetEventObject()
   self.fadeoutValue.Enable(checkbox.GetValue())
-
-  self.changeVolume.Bind(wx.EVT_CHECKBOX, self.onChangeVolume)
 
  def onChangeVolume(self, e):
   checkbox = e.GetEventObject()
