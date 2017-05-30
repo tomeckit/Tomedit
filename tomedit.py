@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+
 import wx
 from wx.lib.pubsub import pub
 class MainWindow(wx.Frame):
@@ -10,7 +12,8 @@ class MainWindow(wx.Frame):
 
  def initUi(self):
   panel = wx.Panel(self)
-  sizer = wx.BoxSizer(wx.HORIZONTAL)
+  sizer = wx.BoxSizer(wx.VERTICAL)
+
   self.listLabel = wx.StaticText(panel, label='pliki')
   self.list = wx.ListView(panel)
   self.list.InsertColumn(0, 'nazwa pliku')
@@ -20,13 +23,25 @@ class MainWindow(wx.Frame):
   self.subFolders = wx.CheckBox(panel,label='uwzglêdniaj podfoldery')
   self.fadein = wx.CheckBox(panel,label='£agodny start')
   self.fadeinLabel = wx.StaticText(panel, label='Ms')
-  self.fadeinValue = wx.TextCtrl(panel)
+  self.fadeinValue = wx.SpinCtrl(panel, value='0', min=0, max=20000)
   self.fadeout = wx.CheckBox(panel,label='£agodne zciszenie')
   self.fadeoutLabel = wx.StaticText(panel, label='Ms')
-  self.fadeoutValue = wx.TextCtrl(panel)
+  self.fadeoutValue = wx.SpinCtrl(panel, value='0', min=0, max=20000)
   self.changeVolume = wx.CheckBox(panel,label='Zmieñ g³oœnoœæ')
+
+  self.volumeMethodTitle = wx.StaticBox( panel, -1, "Zmiana g³oœnoœci" )
+  self.volumeMethod = wx.StaticBoxSizer( self.volumeMethodTitle, wx.VERTICAL )
+  self.volumeMethod.ctrls = []
+  self.volumeMethod.Manual = wx.RadioButton( panel, -1, " Rêcznie ", style = wx.RB_GROUP )
+  self.volumeMethod.Auto = wx.RadioButton( panel, -1, " Automatycznie " )
+  self.volumeMethod.ctrls.append((self.volumeMethod.Manual))
+  self.volumeMethod.ctrls.append((self.volumeMethod.Auto))
+
+
+
   self.volumeLabel = wx.StaticText(panel, label='DB')
-  self.volumeValue = wx.TextCtrl(panel)
+
+  self.volumeValue = wx.SpinCtrl(panel, value='0', min=-140, max=140)
   self.limiter = wx.CheckBox(panel,label='nie dopuszczaj do przesterowania')
   self.swapChannels = wx.CheckBox(panel,label='Zamieñ kana³y')
   self.start = wx.Button(panel, label='Start')
@@ -42,11 +57,15 @@ class MainWindow(wx.Frame):
   sizer.Add(self.fadeoutLabel)
   sizer.Add(self.fadeoutValue)
   sizer.Add(self.changeVolume)
+  sizer.Add(self.volumeMethod)
+  sizer.Add(self.volumeMethod.Manual)
+  sizer.Add(self.volumeMethod.Auto)
   sizer.Add(self.volumeLabel)
   sizer.Add(self.volumeValue)
   sizer.Add(self.limiter)
   sizer.Add(self.swapChannels)
   sizer.Add(self.start)
+
 
   panel.SetSizerAndFit(sizer)
 
@@ -77,6 +96,11 @@ class MainWindow(wx.Frame):
    self.list.Append([dlg.GetPath()])
 
  def setDefaultValues(self):
+#  self.volumeMethod.Enable(self.changeVolume.GetValue())
+# ta etykieta pokazuje siê tak czy inaczej i nie wiem jak zrobiæ ¿eby zniknê³a po odznaczeniu pola wyboru.
+  self.volumeMethod.Manual.Enable(self.changeVolume.GetValue())
+  self.volumeMethod.Auto.Enable(self.changeVolume.GetValue())
+# to siê ukry³o z jakiegoœ powodu na sztywno.
   self.volumeValue.Enable(self.changeVolume.GetValue())
   self.fadeinValue.Enable(self.fadein.GetValue())
   self.fadeoutValue.Enable(self.fadeout.GetValue())
