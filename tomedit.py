@@ -11,6 +11,8 @@ class MainWindow(wx.Frame):
   self.setDefaultValues()
 
  def initUi(self):
+  self.staticBoxCtrls = []
+  self.volumeMethodCtrls=[]
   panel = wx.Panel(self)
   sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -28,23 +30,28 @@ class MainWindow(wx.Frame):
   self.fadeoutLabel = wx.StaticText(panel, label='Ms')
   self.fadeoutValue = wx.SpinCtrl(panel, value='0', min=0, max=20000)
   self.changeVolume = wx.CheckBox(panel,label='Zmieñ g³oœnoœæ')
-
-  self.volumeMethodTitle = wx.StaticBox( panel, -1, "Zmiana g³oœnoœci" )
-  self.volumeMethod = wx.StaticBoxSizer( self.volumeMethodTitle, wx.VERTICAL )
-  self.volumeMethod.ctrls = []
-  self.volumeMethod.Manual = wx.RadioButton( panel, -1, " Rêcznie ", style = wx.RB_GROUP )
-  self.volumeMethod.Auto = wx.RadioButton( panel, -1, " Automatycznie " )
-  self.volumeMethod.ctrls.append((self.volumeMethod.Manual))
-  self.volumeMethod.ctrls.append((self.volumeMethod.Auto))
-
-
+  self.volumeChangeGroup = wx.StaticBox( panel, -1, "Zmiana g³oœnoœci" )
+  staticBoxSizer = wx.StaticBoxSizer(self.volumeChangeGroup, wx.VERTICAL)
+  self.volumeMethodManual = wx.RadioButton( panel, -1, " Rêcznie ", style = wx.RB_GROUP )
+  self.volumeMethodAuto = wx.RadioButton( panel, -1, " Automatycznie " )
 
   self.volumeLabel = wx.StaticText(panel, label='DB')
 
   self.volumeValue = wx.SpinCtrl(panel, value='0', min=-140, max=140)
+
   self.limiter = wx.CheckBox(panel,label='nie dopuszczaj do przesterowania')
   self.swapChannels = wx.CheckBox(panel,label='Zamieñ kana³y')
   self.start = wx.Button(panel, label='Start')
+
+  self.staticBoxCtrls.append(self.volumeMethodManual)
+  self.staticBoxCtrls.append(self.volumeMethodAuto)
+  self.staticBoxCtrls.append(self.volumeLabel)
+  self.staticBoxCtrls.append(self.volumeValue)
+  self.volumeMethodCtrls.append(self.volumeMethodManual)
+  self.volumeMethodCtrls.append(self.volumeMethodAuto)
+  for ctrl in self.staticBoxCtrls:
+   staticBoxSizer.Add(ctrl)
+
   sizer.Add(self.listLabel)
   sizer.Add(self.list)
   sizer.Add(self.addFile)
@@ -56,10 +63,10 @@ class MainWindow(wx.Frame):
   sizer.Add(self.fadeout)
   sizer.Add(self.fadeoutLabel)
   sizer.Add(self.fadeoutValue)
+  sizer.Add(staticBoxSizer)
   sizer.Add(self.changeVolume)
-  sizer.Add(self.volumeMethod)
-  sizer.Add(self.volumeMethod.Manual)
-  sizer.Add(self.volumeMethod.Auto)
+  sizer.Add(self.volumeMethodManual)
+  sizer.Add(self.volumeMethodAuto)
   sizer.Add(self.volumeLabel)
   sizer.Add(self.volumeValue)
   sizer.Add(self.limiter)
@@ -75,6 +82,8 @@ class MainWindow(wx.Frame):
   self.fadein.Bind(wx.EVT_CHECKBOX, self.onFadein)
   self.fadeout.Bind(wx.EVT_CHECKBOX, self.onFadeout)
   self.changeVolume.Bind(wx.EVT_CHECKBOX, self.onChangeVolume)
+  self.volumeMethodManual.Bind(wx.EVT_RADIOBUTTON, self.onManual)
+  self.volumeMethodAuto.Bind(wx.EVT_RADIOBUTTON, self.onAuto)
 
 
  def onFadein(self, e):
@@ -87,7 +96,14 @@ class MainWindow(wx.Frame):
 
  def onChangeVolume(self, e):
   checkbox = e.GetEventObject()
-  self.volumeValue.Enable(checkbox.GetValue())
+  for ctrl in self.staticBoxCtrls:
+   ctrl.Enable(checkbox.GetValue())
+
+ def onManual(self, e):
+  self.volumeValue.Enable(True)
+
+ def onAuto(self, e):
+  self.volumeValue.Enable(False)
 
 
  def onAddFile(self, e):
@@ -96,15 +112,10 @@ class MainWindow(wx.Frame):
    self.list.Append([dlg.GetPath()])
 
  def setDefaultValues(self):
-#  self.volumeMethod.Enable(self.changeVolume.GetValue())
-# ta etykieta pokazuje siê tak czy inaczej i nie wiem jak zrobiæ ¿eby zniknê³a po odznaczeniu pola wyboru.
-  self.volumeMethod.Manual.Enable(self.changeVolume.GetValue())
-  self.volumeMethod.Auto.Enable(self.changeVolume.GetValue())
-# to siê ukry³o z jakiegoœ powodu na sztywno.
-  self.volumeValue.Enable(self.changeVolume.GetValue())
   self.fadeinValue.Enable(self.fadein.GetValue())
   self.fadeoutValue.Enable(self.fadeout.GetValue())
-
+  for ctrl in self.staticBoxCtrls:
+   ctrl.Enable(self.changeVolume.GetValue())
 
 class Controller:
  def __init__(self, app):
